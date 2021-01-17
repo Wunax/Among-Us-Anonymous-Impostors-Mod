@@ -16,7 +16,7 @@ Anonymous Impostors is a mod for Among Us that allows to make impostors anonymou
 ### How can I remove or disable the mod?
 Delete or remove the next file from the folder: `Steam\steamapps\common\Among Us\BepInEx\plugins\AnonymousImpostorsMod.dll`
 ### Can we play on official servers with this mod?
-Currently there are no checks on the Innersloth servers, so you can play privately with your friends on the official servers. Please do not use it in public online matches.
+Currently there are no checks on the Innersloth servers, so you can play privately with your friends on the official servers. **Please do not use it in public online matches.**\
 In case Innersloth implements server-side checks, I recommend that you take a look at private servers like [Impostor](https://github.com/Impostor/Impostor).
 ### Does everyone have to install the mod in the lobby?
 Yes everyone has to install it.
@@ -26,6 +26,6 @@ Yes.
 ## Credits
 
 - Among Us Protocol : https://github.com/codyphobe/among-us-protocol
-**Code snippets :**
+#### Code snippets :
 - https://github.com/Woodi-dev/Among-Us-Sheriff-Mod
 - https://github.com/CheepYT/CheepsAmongUsMods
