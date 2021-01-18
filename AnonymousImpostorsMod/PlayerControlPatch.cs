@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using HarmonyLib;
 using Hazel;
 using AnonymousImpostorsMod.API;
 
 using PlayerControl = FFGALNAPKCD;
 using NetClient = FMLLKEACGIO;
+using HudManager = PPAEIPHJPDH<PIEFJFEOGOL>;
 
 namespace AnonymousImpostorsMod
 {
@@ -17,6 +19,8 @@ namespace AnonymousImpostorsMod
 
             public static void Prefix(PlayerControl __instance)
             {
+                if (!CustomGameOptions.anonymousImpostorsEnabled)
+                    return;
                 var localPlayer = new PlayerController(__instance);
                 var allPlayers = PlayerController.GetAllPlayers();
                 foreach (var player in allPlayers)
@@ -31,6 +35,8 @@ namespace AnonymousImpostorsMod
 
             public static void Postfix()
             {
+                if (!CustomGameOptions.anonymousImpostorsEnabled)
+                    return;
                 foreach (var player in otherImpostors)
                 {
                     player.PlayerData.IsImpostor = true;
@@ -46,8 +52,9 @@ namespace AnonymousImpostorsMod
             {
                 switch (HKHMBLJFLMC)
                 {
-                    case (byte) CustomGameOptions.customGameOptionsRpc.impostorSoloWin:
+                    case (byte) CustomGameOptions.customGameOptionsRpc.syncCustomSettings:
                         {
+                            CustomGameOptions.anonymousImpostorsEnabled = ALMCIJKELCP.ReadBoolean();
                             CustomGameOptions.impostorSoloWin = ALMCIJKELCP.ReadBoolean();
                             break;
                         }
@@ -62,10 +69,50 @@ namespace AnonymousImpostorsMod
             {
                 if (PlayerControl.AllPlayerControls.Count > 1)
                 {
-                    MessageWriter messageWriter = NetClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomGameOptions.customGameOptionsRpc.impostorSoloWin, SendOption.None, -1);
+                    MessageWriter messageWriter = NetClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomGameOptions.customGameOptionsRpc.syncCustomSettings, SendOption.None, -1);
+                    messageWriter.Write(CustomGameOptions.anonymousImpostorsEnabled);
                     messageWriter.Write(CustomGameOptions.impostorSoloWin);
                     NetClient.Instance.FinishRpcImmediately(messageWriter);
                 }
+            }
+        }
+
+        [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.RpcSendChat))]
+        public static class PlayerControlRpcSendChatPatch
+        {
+            public static bool Prefix(PlayerControl __instance, string PGIBDIEPGIC)
+            {
+                string msg = PGIBDIEPGIC;
+                PlayerController localPlayer = PlayerController.GetLocalPlayer();
+                PlayerController host = PlayerController.getHost();
+
+                if (!msg.StartsWith("/anonymous", StringComparison.InvariantCultureIgnoreCase))
+                    return true;
+                if (!localPlayer.Equals(host)) {
+                    HudManager.IAINKLDJAGC.Chat.AddChat(localPlayer.PlayerControl, $"Only the host ({host.PlayerControl.nameText.Text}) can enable or disable the mod.");
+                    HudManager.IAINKLDJAGC.Chat.TextArea.SetText(string.Empty);
+                    return false;
+                }
+                string[] args = msg.Split(' ');
+                if (args.Length < 2 || (!args[1].Equals("on", StringComparison.InvariantCultureIgnoreCase) && !args[1].Equals("off", StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    HudManager.IAINKLDJAGC.Chat.AddChat(localPlayer.PlayerControl, "Incorrect use: /anonymous on|off");
+                    HudManager.IAINKLDJAGC.Chat.TextArea.SetText(string.Empty);
+                    return false;
+                }
+                if (args[1].Equals("on", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    CustomGameOptions.anonymousImpostorsEnabled = true;
+                    HudManager.IAINKLDJAGC.Chat.AddChat(localPlayer.PlayerControl, "Anonymous Impostors [37ff00ff]enabled");
+                }
+                else if (args[1].Equals("off", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    CustomGameOptions.anonymousImpostorsEnabled = false;
+                    HudManager.IAINKLDJAGC.Chat.AddChat(localPlayer.PlayerControl, "Anonymous Impostors [ff0000ff]disabled");
+                }
+                HudManager.IAINKLDJAGC.Chat.TextArea.SetText(string.Empty);
+                localPlayer.PlayerControl.RpcSyncSettings(PlayerControl.GameOptions);
+                return false;
             }
         }
     }

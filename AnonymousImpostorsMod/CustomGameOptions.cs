@@ -9,9 +9,10 @@ namespace AnonymousImpostorsMod
     public static class CustomGameOptions
     {
         public enum customGameOptionsRpc : byte {
-            impostorSoloWin = 61,
+            syncCustomSettings = 60,
         }
 
+        public static bool anonymousImpostorsEnabled;
         public static bool impostorSoloWin;
     }
 }

@@ -12,6 +12,8 @@ namespace AnonymousImpostorsMod
         [HarmonyPatch(typeof(IntroClass), "MoveNext")]
         public static void Prefix(IntroClass __instance)
         {
+            if (!CustomGameOptions.anonymousImpostorsEnabled)
+                return;
             PlayerController localPlayer = PlayerController.GetLocalPlayer();
 
             if (localPlayer.PlayerData.IsImpostor)

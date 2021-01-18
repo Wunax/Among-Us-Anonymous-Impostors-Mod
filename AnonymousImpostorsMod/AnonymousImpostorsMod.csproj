@@ -82,6 +82,7 @@
     <Compile Include="GameOptionsMenuPatch.cs" />
     <Compile Include="HudPatch.cs" />
     <Compile Include="IntroCutScenePatch.cs" />
+    <Compile Include="PingTrackerPatch.cs" />
     <Compile Include="PlayerControlPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShipStatusPatch.cs" />

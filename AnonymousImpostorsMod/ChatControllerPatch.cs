@@ -14,6 +14,8 @@ namespace AnonymousImpostorsMod
         [HarmonyPatch(typeof(ChatController), "AddChat")]
         public static void Prefix(PlayerControl KMCAKLLFNIM)
         {
+            if (!CustomGameOptions.anonymousImpostorsEnabled)
+                return;
             PlayerController player = new PlayerController(KMCAKLLFNIM);
             if (player.PlayerData.IsImpostor && !PlayerController.GetLocalPlayer().Equals(player))
             {
@@ -25,6 +27,8 @@ namespace AnonymousImpostorsMod
         [HarmonyPatch(typeof(ChatController), "AddChat")]
         public static void Postfix(PlayerControl KMCAKLLFNIM)
         {
+            if (!CustomGameOptions.anonymousImpostorsEnabled)
+                return;
             PlayerController player = new PlayerController(KMCAKLLFNIM);
             if (isImpostor)
             {

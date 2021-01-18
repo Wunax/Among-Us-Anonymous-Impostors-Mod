@@ -23,7 +23,7 @@ namespace AnonymousImpostorsMod
                 var shipStatusInstance = ShipStatus.Instance;
                 if (!shipStatusInstance)
                     return true;
-                if (!CustomGameOptions.impostorSoloWin)
+                if (!CustomGameOptions.anonymousImpostorsEnabled || !CustomGameOptions.impostorSoloWin)
                     return true;
                 if (PlayerController.GetAllPlayersAlive().Count <= 1)
                     return true;

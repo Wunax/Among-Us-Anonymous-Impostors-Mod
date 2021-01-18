@@ -18,7 +18,7 @@ namespace AnonymousImpostorsMod
         [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
         public static void Prefix()
         {
-            if (!CustomGameOptions.impostorSoloWin)
+            if (!CustomGameOptions.anonymousImpostorsEnabled || !CustomGameOptions.impostorSoloWin)
                 return;
             int reason = (int) TempData.NGHMMPMNHDL;
             if (reason != 4) // not sabotage

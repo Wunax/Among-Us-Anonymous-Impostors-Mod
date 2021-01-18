@@ -126,5 +126,16 @@ namespace AnonymousImpostorsMod.API
         {
             return Math.Sqrt(Math.Pow(second.Position.x - first.Position.x, 2) + Math.Pow(second.Position.y - first.Position.y, 2));
         }
+
+        public static PlayerController getHost()
+        {
+            var allPlayers = PlayerController.GetAllPlayers();
+            PlayerController host = allPlayers[0];
+
+            foreach (var player in allPlayers)
+                if (player.NetId < host.NetId)
+                    host = player;
+            return host;
+        }
     }
 }

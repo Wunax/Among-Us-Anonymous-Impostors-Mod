@@ -68,6 +68,8 @@ namespace AnonymousImpostorsMod
         {
             if (PlayerControl.LocalPlayer == null)
                 return;
+            if (!CustomGameOptions.anonymousImpostorsEnabled)
+                return;
             UpdateGameSettingsText(__instance);
             PlayerController localPlayer = PlayerController.GetLocalPlayer();
             if (localPlayer.PlayerData != null && localPlayer.PlayerData.IsImpostor)

@@ -20,6 +20,8 @@ namespace AnonymousImpostorsMod
         {
             public static void Postfix(GameOptionsMenu __instance)
             {
+                if (!CustomGameOptions.anonymousImpostorsEnabled)
+                    return;
                 if (UnityEngine.Object.FindObjectsOfType<ToggleOption>().Count == 4)
                 {
                     ToggleOption original = (from x in UnityEngine.Object.FindObjectsOfType<ToggleOption>().ToList<ToggleOption>()
@@ -44,6 +46,8 @@ namespace AnonymousImpostorsMod
 
             public static void Postfix(GameOptionsMenu __instance)
             {
+                if (!CustomGameOptions.anonymousImpostorsEnabled)
+                    return;
                 ToggleOption option = (from x in UnityEngine.Object.FindObjectsOfType<ToggleOption>().ToList<ToggleOption>()
                                            where x.TitleText.Text == "Anonymous Votes"
                                            select x).First<ToggleOption>();
