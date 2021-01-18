@@ -59,6 +59,58 @@ namespace AnonymousImpostorsMod.API
             return allPlayers;
         }
 
+        public static List<PlayerController> GetAllPlayersAlive()
+        {
+            List<PlayerController> alives = new List<PlayerController>();
+            List<PlayerController> allPlayers = GetAllPlayers();
+
+            foreach (var player in allPlayers)
+            {
+                if (!player.PlayerData.IsDead)
+                    alives.Add(player);
+            }
+            return alives;
+        }
+
+        public static List<PlayerController> GetCrewmates()
+        {
+            List<PlayerController> crewmates = new List<PlayerController>();
+            List<PlayerController> allPlayers = GetAllPlayers();
+
+            foreach (var player in allPlayers)
+            {
+                if (!player.PlayerData.IsImpostor)
+                    crewmates.Add(player);
+            }
+            return crewmates;
+        }
+
+        public static List<PlayerController> GetImpostors()
+        {
+            List<PlayerController> impostors = new List<PlayerController>();
+            List<PlayerController> allPlayers = GetAllPlayers();
+
+            foreach (var player in allPlayers)
+            {
+                if (player.PlayerData.IsImpostor)
+                    impostors.Add(player);
+            }
+            return impostors;
+        }
+
+        public static List<PlayerController> GetImpostorsAlive()
+        {
+            List<PlayerController> impostorsAlive = new List<PlayerController>();
+            List<PlayerController> impostors = GetImpostors();
+
+            foreach (var player in impostors)
+            {
+                if (!player.PlayerData.IsDead)
+                    impostorsAlive.Add(player);
+            }
+            return impostorsAlive;
+        }
+
         public static PlayerController getPlayerById(byte id)
         {
             var allPlayers = GetAllPlayers();

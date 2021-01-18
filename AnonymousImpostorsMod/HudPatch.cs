@@ -1,4 +1,7 @@
-﻿using HarmonyLib;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using HarmonyLib;
 using UnityEngine;
 using AnonymousImpostorsMod.API;
 
@@ -13,6 +16,8 @@ namespace AnonymousImpostorsMod
     [HarmonyPatch]
     public static class HudPatch
     {
+        public static string GameSettingsText = null;
+
         public static void updateMeetingHud(MeetingHud __instance, PlayerController localPlayer)
         {
             foreach (PlayerMeeting player in __instance.HBDFFAHBIGI)
@@ -23,7 +28,6 @@ namespace AnonymousImpostorsMod
                 }
             }
         }
-
         public static void hideOtherImpostors(PlayerController localPlayer)
         {
             var listPlayers = PlayerController.GetAllPlayers();
@@ -46,11 +50,25 @@ namespace AnonymousImpostorsMod
                 HudManager.IAINKLDJAGC.KillButton.SetTarget(closest.PlayerControl);
         }
 
+        public static void UpdateGameSettingsText(Hud __instance)
+        {
+            if (__instance.GameSettings.Text.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).Count() == 19)
+                GameSettingsText = __instance.GameSettings.Text;
+            if (GameSettingsText != null)
+            {
+                if (CustomGameOptions.impostorSoloWin)
+                    __instance.GameSettings.Text = GameSettingsText + "Impostor Solo Win: On" + "\n";
+                else
+                    __instance.GameSettings.Text = GameSettingsText + "Impostor Solo Win: Off" + "\n";
+            }
+        }
+
         [HarmonyPatch(typeof(Hud), "Update")]
-        public static void Postfix()
+        public static void Postfix(Hud __instance)
         {
             if (PlayerControl.LocalPlayer == null)
                 return;
+            UpdateGameSettingsText(__instance);
             PlayerController localPlayer = PlayerController.GetLocalPlayer();
             if (localPlayer.PlayerData != null && localPlayer.PlayerData.IsImpostor)
             {

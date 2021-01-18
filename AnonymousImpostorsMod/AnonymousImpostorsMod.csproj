@@ -77,10 +77,15 @@
     <Compile Include="API\PlayerController.cs" />
     <Compile Include="API\PlayerData.cs" />
     <Compile Include="ChatControllerPatch.cs" />
+    <Compile Include="CustomGameOptions.cs" />
+    <Compile Include="EndGameManagerPatch.cs" />
+    <Compile Include="GameOptionsMenuPatch.cs" />
     <Compile Include="HudPatch.cs" />
     <Compile Include="IntroCutScenePatch.cs" />
     <Compile Include="PlayerControlPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShipStatusPatch.cs" />
+    <Compile Include="ToggleButtonPatch.cs" />
     <Compile Include="VersionShowerPatch.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
