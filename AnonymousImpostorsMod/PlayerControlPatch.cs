@@ -96,7 +96,9 @@ namespace AnonymousImpostorsMod
                 }
                 if (GameData.currentGame.GameState == GameStates.Started)
                 {
-
+                    HudManager.IAINKLDJAGC.Chat.AddChat(localPlayer.PlayerControl, "You cannot change this setting while the game is in progress.");
+                    HudManager.IAINKLDJAGC.Chat.TextArea.SetText(string.Empty);
+                    return false;
                 }
                 string[] args = msg.Split(' ');
                 if (msg.StartsWith("/anonymous", StringComparison.InvariantCultureIgnoreCase))
