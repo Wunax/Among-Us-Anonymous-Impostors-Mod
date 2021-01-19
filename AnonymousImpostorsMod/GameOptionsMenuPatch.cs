@@ -20,21 +20,25 @@ namespace AnonymousImpostorsMod
         {
             public static void Postfix(GameOptionsMenu __instance)
             {
-                if (!CustomGameOptions.anonymousImpostorsEnabled)
-                    return;
                 if (UnityEngine.Object.FindObjectsOfType<ToggleOption>().Count == 4)
                 {
-                    ToggleOption original = (from x in UnityEngine.Object.FindObjectsOfType<ToggleOption>().ToList<ToggleOption>()
-                                            where x.TitleText.Text == "Anonymous Votes"
-                                            select x).First<ToggleOption>();
-                    GameOptionsMenuUpdatePatch.impostorSoloWin = UnityEngine.Object.Instantiate<ToggleOption>(original);
+                    ToggleOption anonymousVote = GameObject.FindObjectsOfType<ToggleOption>().ToList().Where(x => x.TitleText.Text == "Anonymous Votes").First();
+
+                    GameOptionsMenuUpdatePatch.anonymousImpostors = GameObject.Instantiate(anonymousVote);
+                    GameOptionsMenuUpdatePatch.anonymousImpostors.TitleText.Text = "Anonymous Impostors";
+                    GameOptionsMenuUpdatePatch.anonymousImpostors.NHLMDAOEOAE = CustomGameOptions.anonymousImpostorsEnabled;
+                    GameOptionsMenuUpdatePatch.anonymousImpostors.CheckMark.enabled = CustomGameOptions.anonymousImpostorsEnabled;
+
+                    GameOptionsMenuUpdatePatch.impostorSoloWin = GameObject.Instantiate(anonymousVote);
                     GameOptionsMenuUpdatePatch.impostorSoloWin.TitleText.Text = "Impostor Solo Win";
                     GameOptionsMenuUpdatePatch.impostorSoloWin.NHLMDAOEOAE = CustomGameOptions.impostorSoloWin;
                     GameOptionsMenuUpdatePatch.impostorSoloWin.CheckMark.enabled = CustomGameOptions.impostorSoloWin;
-                    OptionBehaviour[] array = new OptionBehaviour[__instance.KJFHAPEDEBH.Count + 1];
-                    __instance.KJFHAPEDEBH.ToArray<OptionBehaviour>().CopyTo(array, 0);
-                    array[array.Length - 1] = GameOptionsMenuUpdatePatch.impostorSoloWin;
-                    __instance.KJFHAPEDEBH = new Il2CppReferenceArray<OptionBehaviour>(array);
+
+                    OptionBehaviour[] options = new OptionBehaviour[__instance.KJFHAPEDEBH.Count + 2];
+                    __instance.KJFHAPEDEBH.ToArray().CopyTo(options, 0);
+                    options[options.Length - 2] = GameOptionsMenuUpdatePatch.anonymousImpostors;
+                    options[options.Length - 1] = GameOptionsMenuUpdatePatch.impostorSoloWin;
+                    __instance.KJFHAPEDEBH = new Il2CppReferenceArray<OptionBehaviour>(options);
                 }
             }     
         }
@@ -42,16 +46,16 @@ namespace AnonymousImpostorsMod
         [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Update))]
         public static class GameOptionsMenuUpdatePatch
         {
+            public static ToggleOption anonymousImpostors;
             public static ToggleOption impostorSoloWin;
 
-            public static void Postfix(GameOptionsMenu __instance)
+            public static void Postfix()
             {
-                if (!CustomGameOptions.anonymousImpostorsEnabled)
-                    return;
-                ToggleOption option = (from x in UnityEngine.Object.FindObjectsOfType<ToggleOption>().ToList<ToggleOption>()
-                                           where x.TitleText.Text == "Anonymous Votes"
-                                           select x).First<ToggleOption>();
-                impostorSoloWin.transform.position = option.transform.position - new Vector3(0f, 5.5f, 0f);
+                ToggleOption option = GameObject.FindObjectsOfType<BCLDBBKFJPK>().ToList().Where(x => x.TitleText.Text == "Anonymous Votes").First();
+                if (anonymousImpostors != null)
+                    anonymousImpostors.transform.position = option.transform.position - new Vector3(0f, 5.5f, 0f);
+                if (CustomGameOptions.anonymousImpostorsEnabled && impostorSoloWin != null)
+                    impostorSoloWin.transform.position = option.transform.position - new Vector3(0f, 6f, 0f);
             }
         }
     }

@@ -26,7 +26,9 @@ namespace AnonymousImpostorsMod
                 if (!CustomGameOptions.anonymousImpostorsEnabled || !CustomGameOptions.impostorSoloWin)
                     return true;
                 if (PlayerController.GetAllPlayersAlive().Count <= 1)
+                {
                     return true;
+                }
                 if (PlayerController.GetImpostorsAlive().Count <= 1)
                     return true;
                 if (shipStatusInstance.CheckTaskCompletion())
@@ -34,19 +36,48 @@ namespace AnonymousImpostorsMod
                     ShipStatus.PLBGOMIEONF(GameOverReason.HumansByTask, false);
                     return false;
                 }
-                var LifeSupp = shipStatusInstance.Systems[LJFDDJHBOGF.LifeSupp].Cast<LifeSuppSystem>();
-                if (LifeSupp.BCKOBJLJEFE && LifeSupp.HMJFAFANEEL <= 0)
+                if (shipStatusInstance.Systems.ContainsKey(LJFDDJHBOGF.LifeSupp))
                 {
-                    shipStatusInstance.ICKBKNMHKCM();
-                    return false;
+                    var LifeSupp = shipStatusInstance.Systems[LJFDDJHBOGF.LifeSupp].Cast<LifeSuppSystem>();
+                    if (LifeSupp.BCKOBJLJEFE && LifeSupp.HMJFAFANEEL <= 0)
+                    {
+                        shipStatusInstance.ICKBKNMHKCM();
+                        return false;
+                    }
                 }
-                var Reactor = shipStatusInstance.Systems[LJFDDJHBOGF.Reactor].Cast<ReactorSystem>();
-                if (Reactor.BCKOBJLJEFE && Reactor.HMJFAFANEEL <= 0)
+                if (shipStatusInstance.Systems.ContainsKey(LJFDDJHBOGF.Reactor))
                 {
-                    shipStatusInstance.ICKBKNMHKCM();
-                    return false;
+                    var Reactor = shipStatusInstance.Systems[LJFDDJHBOGF.Reactor].Cast<ReactorSystem>();
+                    if (Reactor.BCKOBJLJEFE && Reactor.HMJFAFANEEL <= 0)
+                    {
+                        shipStatusInstance.ICKBKNMHKCM();
+                        return false;
+                    }
+                }
+                if (shipStatusInstance.Systems.ContainsKey(LJFDDJHBOGF.Laboratory))
+                {
+                    var Reactor = shipStatusInstance.Systems[LJFDDJHBOGF.Laboratory].Cast<ReactorSystem>();
+                    if (Reactor.BCKOBJLJEFE && Reactor.HMJFAFANEEL <= 0)
+                    {
+                        shipStatusInstance.ICKBKNMHKCM();
+                        return false;
+                    }
                 }
                 return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.IsGameOverDueToDeath))]
+        public static class MeetingHandleProceedPatch
+        {
+            public static void Postfix(ShipStatus __instance, ref bool __result)
+            {
+                if (!CustomGameOptions.anonymousImpostorsEnabled ||
+                    !CustomGameOptions.impostorSoloWin ||
+                    PlayerController.GetAllPlayersAlive().Count <= 1 ||
+                    PlayerController.GetImpostorsAlive().Count <= 1)
+                    return;
+                __result = false;
             }
         }
     }

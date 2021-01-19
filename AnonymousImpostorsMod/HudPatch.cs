@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
@@ -10,6 +12,8 @@ using HudManager = PPAEIPHJPDH<PIEFJFEOGOL>;
 using MeetingHud = OOCJALPKPEP;
 using PlayerMeeting = HDJGDMFCHDN;
 using PlayerControl = FFGALNAPKCD;
+using GameOptionsMenu = PHCKLDDNJNP;
+using GameStates = KHNHJFFECBP.KGEKNMMAKKN;
 
 namespace AnonymousImpostorsMod
 {
@@ -50,16 +54,35 @@ namespace AnonymousImpostorsMod
                 HudManager.IAINKLDJAGC.KillButton.SetTarget(closest.PlayerControl);
         }
 
-        public static void UpdateGameSettingsText(Hud __instance)
+        public static void updateGameSettingsText(Hud __instance)
         {
             if (__instance.GameSettings.Text.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).Count() == 19)
                 GameSettingsText = __instance.GameSettings.Text;
             if (GameSettingsText != null)
             {
-                if (CustomGameOptions.impostorSoloWin)
-                    __instance.GameSettings.Text = GameSettingsText + "Impostor Solo Win: On" + "\n";
+                string append = String.Empty;
+                if (CustomGameOptions.anonymousImpostorsEnabled)
+                    append += "Anonymous Impostors: On" + "\n";
                 else
-                    __instance.GameSettings.Text = GameSettingsText + "Impostor Solo Win: Off" + "\n";
+                    append += "Anonymous Impostors: Off" + "\n";
+                if (CustomGameOptions.anonymousImpostorsEnabled)
+                {
+                    if (CustomGameOptions.impostorSoloWin)
+                        append += "Impostor Solo Win: On" + "\n";
+                    else
+                        append += "Impostor Solo Win: Off" + "\n";
+                }
+                __instance.GameSettings.Text = GameSettingsText + append;
+            }
+        }
+
+        public static void hideGameMenuSettings()
+        {
+            if (GameOptionsMenuPatch.GameOptionsMenuUpdatePatch.anonymousImpostors != null && GameOptionsMenuPatch.GameOptionsMenuUpdatePatch.impostorSoloWin != null)
+            {
+                bool isActive = GameObject.FindObjectsOfType<GameOptionsMenu>().Count != 0;
+                GameOptionsMenuPatch.GameOptionsMenuUpdatePatch.anonymousImpostors.gameObject.SetActive(isActive);
+                GameOptionsMenuPatch.GameOptionsMenuUpdatePatch.impostorSoloWin.gameObject.SetActive(isActive);
             }
         }
 
@@ -68,17 +91,27 @@ namespace AnonymousImpostorsMod
         {
             if (PlayerControl.LocalPlayer == null)
                 return;
-            if (!CustomGameOptions.anonymousImpostorsEnabled)
-                return;
-            UpdateGameSettingsText(__instance);
-            PlayerController localPlayer = PlayerController.GetLocalPlayer();
-            if (localPlayer.PlayerData != null && localPlayer.PlayerData.IsImpostor)
+            if (GameData.currentGame.GameState != GameStates.Started)
+                updateGameSettingsText(__instance);
+            if (CustomGameOptions.anonymousImpostorsEnabled)
             {
-                if (MeetingHud.Instance != null)
-                    updateMeetingHud(MeetingHud.Instance, localPlayer);
-                hideOtherImpostors(localPlayer);
-                if (!localPlayer.PlayerData.IsDead)
-                    setClosestTargetKillButton(localPlayer);
+                PlayerController localPlayer = PlayerController.GetLocalPlayer();
+                if (localPlayer.PlayerData != null && localPlayer.PlayerData.IsImpostor)
+                {
+                    if (MeetingHud.Instance != null)
+                        updateMeetingHud(MeetingHud.Instance, localPlayer);
+                    hideOtherImpostors(localPlayer);
+                    if (!localPlayer.PlayerData.IsDead)
+                        setClosestTargetKillButton(localPlayer);
+                }
+            }
+            if (GameData.currentGame.GameState != GameStates.Started)
+            {
+                Task.Run(async () =>
+                {
+                    await Task.Delay(100);
+                    hideGameMenuSettings();
+                });
             }
         }
     }

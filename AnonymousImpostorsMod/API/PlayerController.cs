@@ -122,6 +122,17 @@ namespace AnonymousImpostorsMod.API
             return null;
         }
 
+        public static PlayerController getPlayerByName(string name)
+        {
+            var allPlayers = GetAllPlayers();
+            foreach (var player in allPlayers)
+            {
+                if (player.PlayerControl.nameText.Text == name)
+                    return player;
+            }
+            return null;
+        }
+
         public static double distBeetweenPlayers(PlayerController first, PlayerController second)
         {
             return Math.Sqrt(Math.Pow(second.Position.x - first.Position.x, 2) + Math.Pow(second.Position.y - first.Position.y, 2));

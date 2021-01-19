@@ -7,6 +7,7 @@ using AnonymousImpostorsMod.API;
 using PlayerControl = FFGALNAPKCD;
 using NetClient = FMLLKEACGIO;
 using HudManager = PPAEIPHJPDH<PIEFJFEOGOL>;
+using GameStates = KHNHJFFECBP.KGEKNMMAKKN;
 
 namespace AnonymousImpostorsMod
 {
@@ -86,29 +87,60 @@ namespace AnonymousImpostorsMod
                 PlayerController localPlayer = PlayerController.GetLocalPlayer();
                 PlayerController host = PlayerController.getHost();
 
-                if (!msg.StartsWith("/anonymous", StringComparison.InvariantCultureIgnoreCase))
+                if (!msg.StartsWith("/anonymous", StringComparison.InvariantCultureIgnoreCase) && !msg.StartsWith("/soloimpostor", StringComparison.InvariantCultureIgnoreCase))
                     return true;
                 if (!localPlayer.Equals(host)) {
-                    HudManager.IAINKLDJAGC.Chat.AddChat(localPlayer.PlayerControl, $"Only the host ({host.PlayerControl.nameText.Text}) can enable or disable the mod.");
+                    HudManager.IAINKLDJAGC.Chat.AddChat(localPlayer.PlayerControl, $"Only the host ({host.PlayerControl.nameText.Text}) can change the settings of the mod.");
                     HudManager.IAINKLDJAGC.Chat.TextArea.SetText(string.Empty);
                     return false;
+                }
+                if (GameData.currentGame.GameState == GameStates.Started)
+                {
+
                 }
                 string[] args = msg.Split(' ');
-                if (args.Length < 2 || (!args[1].Equals("on", StringComparison.InvariantCultureIgnoreCase) && !args[1].Equals("off", StringComparison.InvariantCultureIgnoreCase)))
+                if (msg.StartsWith("/anonymous", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    HudManager.IAINKLDJAGC.Chat.AddChat(localPlayer.PlayerControl, "Incorrect use: /anonymous on|off");
-                    HudManager.IAINKLDJAGC.Chat.TextArea.SetText(string.Empty);
-                    return false;
-                }
-                if (args[1].Equals("on", StringComparison.InvariantCultureIgnoreCase))
+                    if (args.Length < 2 || (!args[1].Equals("on", StringComparison.InvariantCultureIgnoreCase) && !args[1].Equals("off", StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        HudManager.IAINKLDJAGC.Chat.AddChat(localPlayer.PlayerControl, "Incorrect use: /anonymous on|off");
+                        HudManager.IAINKLDJAGC.Chat.TextArea.SetText(string.Empty);
+                        return false;
+                    }
+                    if (args[1].Equals("on", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        CustomGameOptions.anonymousImpostorsEnabled = true;
+                        HudManager.IAINKLDJAGC.Chat.AddChat(localPlayer.PlayerControl, "Anonymous Impostors [37ff00ff]enabled");
+                    }
+                    else if (args[1].Equals("off", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        CustomGameOptions.anonymousImpostorsEnabled = false;
+                        HudManager.IAINKLDJAGC.Chat.AddChat(localPlayer.PlayerControl, "Anonymous Impostors [ff0000ff]disabled");
+                    }
+                } else if (msg.StartsWith("/soloimpostor", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    CustomGameOptions.anonymousImpostorsEnabled = true;
-                    HudManager.IAINKLDJAGC.Chat.AddChat(localPlayer.PlayerControl, "Anonymous Impostors [37ff00ff]enabled");
-                }
-                else if (args[1].Equals("off", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    CustomGameOptions.anonymousImpostorsEnabled = false;
-                    HudManager.IAINKLDJAGC.Chat.AddChat(localPlayer.PlayerControl, "Anonymous Impostors [ff0000ff]disabled");
+                    if (args.Length < 2 || (!args[1].Equals("on", StringComparison.InvariantCultureIgnoreCase) && !args[1].Equals("off", StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        HudManager.IAINKLDJAGC.Chat.AddChat(localPlayer.PlayerControl, "Incorrect use: /soloimpostor on|off");
+                        HudManager.IAINKLDJAGC.Chat.TextArea.SetText(string.Empty);
+                        return false;
+                    }
+                    if (!CustomGameOptions.anonymousImpostorsEnabled)
+                    {
+                        HudManager.IAINKLDJAGC.Chat.AddChat(localPlayer.PlayerControl, "Anonymous Impostors must be enabled to change this setting.");
+                        HudManager.IAINKLDJAGC.Chat.TextArea.SetText(string.Empty);
+                        return false;
+                    }
+                    if (args[1].Equals("on", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        CustomGameOptions.impostorSoloWin = true;
+                        HudManager.IAINKLDJAGC.Chat.AddChat(localPlayer.PlayerControl, "Impostors must win solo [37ff00ff]enabled");
+                    }
+                    else if (args[1].Equals("off", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        CustomGameOptions.impostorSoloWin = false;
+                        HudManager.IAINKLDJAGC.Chat.AddChat(localPlayer.PlayerControl, "Impostors must win solo [ff0000ff]disabled");
+                    }
                 }
                 HudManager.IAINKLDJAGC.Chat.TextArea.SetText(string.Empty);
                 localPlayer.PlayerControl.RpcSyncSettings(PlayerControl.GameOptions);

@@ -16,6 +16,16 @@ namespace AnonymousImpostorsMod
         [HarmonyPatch(typeof(ToggleButton), nameof(ToggleButton.Toggle))]
         public static bool Prefix(ToggleButton __instance)
         {
+            if (__instance.TitleText.Text == "Anonymous Impostors")
+            {
+                CustomGameOptions.anonymousImpostorsEnabled = !CustomGameOptions.anonymousImpostorsEnabled;
+                PlayerControl.LocalPlayer.RpcSyncSettings(PlayerControl.GameOptions);
+                __instance.NHLMDAOEOAE = CustomGameOptions.anonymousImpostorsEnabled;
+                __instance.CheckMark.enabled = CustomGameOptions.anonymousImpostorsEnabled;
+                if (GameOptionsMenuPatch.GameOptionsMenuUpdatePatch.impostorSoloWin != null)
+                    GameOptionsMenuPatch.GameOptionsMenuUpdatePatch.impostorSoloWin.gameObject.SetActive(CustomGameOptions.anonymousImpostorsEnabled);
+                return false;
+            }
             if (__instance.TitleText.Text == "Impostor Solo Win")
             {
                 CustomGameOptions.impostorSoloWin = !CustomGameOptions.impostorSoloWin;
