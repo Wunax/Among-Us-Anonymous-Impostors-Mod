@@ -1,6 +1,7 @@
 # Anonymous Impostors Mod
 
-Anonymous Impostors is a mod for Among Us that allows to make impostors anonymous to each other. Therefore impostors can accidentally kill each other.
+Anonymous Impostors is a mod for Among Us that allows to make impostors anonymous to each other. Therefore impostors can accidentally kill each other.\
+The mod also adds a option to force imposters to win solo.
 
 ## Installation
 
@@ -10,6 +11,11 @@ Anonymous Impostors is a mod for Among Us that allows to make impostors anonymou
 4. Extract the content of the BepInEx Unity IL2CPP archive to your Among Us game folder (where your `Among Us.exe` is located).
 5. Extract the content of the mod archive to your Among Us game folder (where your `Among Us.exe` is located).
 6. Start your game as usual.
+
+## Usage
+
+In the lobby the host can enable anonymous impostors with the command `/anonymous on|off` in the chat or directly in the lobby settings.\
+The option to force impostors to win solo is available with the command `/soloimpostors on|off` or also in the lobby settings (**Note**: This option does not work if anonymous impostors are not enabled).
 
 ## FAQ
 
