@@ -8,7 +8,7 @@ namespace AnonymousImpostorsMod
     [BepInPlugin("org.bepinex.plugins.AnonymousImpostorsMod", "Anonymous Impostors Mod", version)]
     public class AnonymousImpostors : BasePlugin
     {
-        public const string version = "1.2";
+        public const string version = "1.3";
 
         public static ManualLogSource log;
         private readonly Harmony harmony;
