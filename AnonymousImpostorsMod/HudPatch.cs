@@ -21,6 +21,7 @@ namespace AnonymousImpostorsMod
     public static class HudPatch
     {
         public static string GameSettingsText = null;
+        public static int frame = 0;
 
         public static void updateMeetingHud(MeetingHud __instance, PlayerController localPlayer)
         {
@@ -42,16 +43,6 @@ namespace AnonymousImpostorsMod
                     player.PlayerControl.nameText.Color = new Color(1f, 1f, 1f, 1f);
                 }
             }
-        }
-
-        public static void setClosestTargetKillButton(PlayerController localPlayer)
-        {
-            PlayerControl closestPlayerControl = localPlayer.PlayerControl.CLKILNOCHEP();
-            if (closestPlayerControl == null)
-                return;
-            PlayerController closest = new PlayerController(closestPlayerControl);
-            if (PlayerController.distBeetweenPlayers(localPlayer, closest) <= GameOptionsData.getKillDistance())
-                HudManager.IAINKLDJAGC.KillButton.SetTarget(closest.PlayerControl);
         }
 
         public static void updateGameSettingsText(Hud __instance)
@@ -101,17 +92,19 @@ namespace AnonymousImpostorsMod
                     if (MeetingHud.Instance != null)
                         updateMeetingHud(MeetingHud.Instance, localPlayer);
                     hideOtherImpostors(localPlayer);
-                    if (!localPlayer.PlayerData.IsDead)
-                        setClosestTargetKillButton(localPlayer);
                 }
             }
             if (GameData.currentGame.GameState != GameStates.Started)
             {
-                Task.Run(async () =>
+                if (frame < 60)
                 {
-                    await Task.Delay(100);
+                    frame++;
+                }
+                else
+                {
+                    frame = 0;
                     hideGameMenuSettings();
-                });
+                }
             }
         }
     }

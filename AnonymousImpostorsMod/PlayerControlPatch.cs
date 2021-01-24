@@ -13,7 +13,7 @@ namespace AnonymousImpostorsMod
 {
     public class PlayerControlPatch
     {
-        [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CLKILNOCHEP))]
+        [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.OAFBLFBAOJJ))]
         public static class PlayerControlFindClosestPlayerPatch
         {
             public static List<PlayerController> otherImpostors = new List<PlayerController>();
